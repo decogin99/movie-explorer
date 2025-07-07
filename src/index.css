@@ -1,0 +1,51 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
+@import "tailwindcss";
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Montserrat', sans-serif;
+}
+
+button {
+  cursor: pointer;
+}
+
+@layer base {
+  html {
+    -webkit-tap-highlight-color: transparent;
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply font-sans antialiased text-gray-900 bg-gray-50 dark:bg-gray-900 dark:text-white;
+  }
+}
+
+@layer components {
+
+  .mobile-header {
+    @apply fixed top-0 left-0 right-0 bg-white dark:bg-gray-800 z-50 border-b border-gray-200 dark:border-gray-700;
+  }
+
+  .mobile-content {
+    @apply pt-16 pb-20 px-4;
+    /* Adjust based on your header/footer height */
+  }
+
+  .mobile-footer {
+    @apply fixed bottom-0 left-0 right-0 bg-white dark:bg-gray-800 z-50 border-t border-gray-200 dark:border-gray-700;
+  }
+}
+
+/* Hide scrollbar but keep functionality */
+@layer utilities {
+  .hide-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  .hide-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+}
