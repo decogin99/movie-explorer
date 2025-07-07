@@ -77,6 +77,7 @@ export const tmdbApi = {
                     include_adult: false
                 }
             });
+
             return {
                 ...response.data,
                 results: response.data.results.slice(0, 18)

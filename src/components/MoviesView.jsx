@@ -39,7 +39,7 @@ export default function MoviesView() {
             setLoading(false);
         };
         fetchMovies();
-    }, [page, selectedGenres, sortBy, searchQuery, isSearching]);
+    }, [page, selectedGenres, sortBy, isSearching]); // Removed searchQuery from dependencies
 
     const handleGenreChange = (genreId) => {
         // Clear search when using genre filter

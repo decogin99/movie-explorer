@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { tmdbApi } from '../services/tmdb';
 import MovieCard from './MovieCard';
+import { useNavigate } from 'react-router-dom';
 
 export default function MainContent() {
     const [movies, setMovies] = useState({
@@ -9,6 +10,7 @@ export default function MainContent() {
         topRated: []
     });
     const [loading, setLoading] = useState(true);
+    const navigate = useNavigate();
 
     useEffect(() => {
         const fetchAllMovies = async () => {
@@ -30,7 +32,15 @@ export default function MainContent() {
 
     const MovieSection = ({ title, movies }) => (
         <div className="bg-white dark:bg-gray-800 rounded-2xl p-4 shadow-sm border border-gray-100 dark:border-gray-700">
-            <h3 className="text-lg font-semibold mb-3">{title}</h3>
+            <div className="flex justify-between items-center mb-3">
+                <h3 className="text-lg font-semibold">{title}</h3>
+                <button
+                    onClick={() => navigate('/movies')}
+                    className="text-sm text-blue-500 hover:text-blue-600 dark:text-blue-400 dark:hover:text-blue-300"
+                >
+                    View All
+                </button>
+            </div>
             <div className="flex overflow-x-auto hide-scrollbar space-x-4 pb-4">
                 {loading ? (
                     [...Array(9)].map((_, i) => (

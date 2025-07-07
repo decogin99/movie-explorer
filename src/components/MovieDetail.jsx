@@ -5,6 +5,7 @@ import { useFavorites } from '../context/FavoritesContext';
 export default function MovieDetail({ movieId, onClose }) {
     const [movie, setMovie] = useState(null);
     const [loading, setLoading] = useState(true);
+    const [showTrailer, setShowTrailer] = useState(false);
     const { toggleFavorite, isFavorite } = useFavorites();
 
     useEffect(() => {
@@ -12,18 +13,22 @@ export default function MovieDetail({ movieId, onClose }) {
             const details = await tmdbApi.getMovieDetails(movieId);
             setMovie(details);
             setLoading(false);
-            console.log(details)
         };
         fetchMovieDetails();
 
-        // Prevent background scrolling when modal is open
         document.body.style.overflow = 'hidden';
-
-        // Re-enable scrolling when modal is closed
         return () => {
             document.body.style.overflow = 'auto';
         };
     }, [movieId]);
+
+    const getTrailerUrl = () => {
+        if (!movie?.videos?.results) return null;
+        const trailer = movie.videos.results.find(
+            video => video.type === "Trailer" && video.site === "YouTube"
+        );
+        return trailer ? `https://www.youtube.com/embed/${trailer.key}?autoplay=1` : null;
+    };
 
     if (loading) {
         return (
@@ -39,8 +44,30 @@ export default function MovieDetail({ movieId, onClose }) {
 
     if (!movie) return null;
 
+    const trailerUrl = getTrailerUrl();
+
     return (
-        <div className="fixed inset-0 flex flex-col w-full backdrop-blur-sm bg-opacity-50 items-center justify-center z-[60]">
+        <div className="fixed inset-0 flex flex-col w-full backdrop-blur-sm bg-opacity-50 items-center justify-center z-[60] px-3">
+            {showTrailer && trailerUrl && (
+                <div className="fixed inset-0 bg-black bg-opacity-90 z-[70] flex items-center justify-center">
+                    <div className="relative w-full max-w-4xl aspect-video">
+                        <iframe
+                            src={trailerUrl}
+                            className="w-full h-full"
+                            allowFullScreen
+                            allow="autoplay"
+                        ></iframe>
+                        <button
+                            onClick={() => setShowTrailer(false)}
+                            className="absolute -top-10 right-0 text-white hover:text-gray-300"
+                        >
+                            <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            )}
             <div className="bg-white dark:bg-gray-800 rounded-md max-w-lg w-full max-h-[90vh] overflow-y-auto hide-scrollbar ring-1 ring-gray-700 shadow-md">
                 <div className="relative">
                     <img
@@ -79,7 +106,21 @@ export default function MovieDetail({ movieId, onClose }) {
                 </div>
 
                 <div className="p-4">
-                    <h2 className="text-2xl font-bold mb-2">{movie.title}</h2>
+                    <div className="flex flex-col sm:flex-row justify-between items-start gap-3 mb-4">
+                        <h2 className="text-2xl font-bold">{movie.title}</h2>
+                        {trailerUrl && (
+                            <button
+                                onClick={() => setShowTrailer(true)}
+                                className="flex items-center gap-1 px-3 py-1.5 text-sm bg-red-600 text-white rounded-full hover:bg-red-700 transition-colors whitespace-nowrap"
+                            >
+                                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                </svg>
+                                Watch Trailer
+                            </button>
+                        )}
+                    </div>
                     <div className="flex items-center gap-4 text-sm text-gray-600 dark:text-gray-400 mb-4">
                         <span>{new Date(movie.release_date).getFullYear()}</span>
                         <span className='flex items-center gap-1'>
