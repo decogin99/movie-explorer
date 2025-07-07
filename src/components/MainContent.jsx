@@ -56,8 +56,8 @@ export default function MainContent() {
     );
 
     return (
-        <main className="mobile-content hide-scrollbar overflow-y-auto px-4 mb-2">
-            <div className="space-y-3">
+        <main className="mobile-content hide-scrollbar overflow-y-auto px-4 mt-1">
+            <div className="space-y-4">
                 <MovieSection title="Upcoming Movies" movies={movies.upcoming} />
                 <MovieSection title="Popular Movies" movies={movies.popular} />
                 <MovieSection title="Top Rated Movies" movies={movies.topRated} />
