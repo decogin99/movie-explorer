@@ -15,6 +15,14 @@ export default function MovieDetail({ movieId, onClose }) {
             console.log(details)
         };
         fetchMovieDetails();
+
+        // Prevent background scrolling when modal is open
+        document.body.style.overflow = 'hidden';
+
+        // Re-enable scrolling when modal is closed
+        return () => {
+            document.body.style.overflow = 'auto';
+        };
     }, [movieId]);
 
     if (loading) {
@@ -45,17 +53,17 @@ export default function MovieDetail({ movieId, onClose }) {
                             onClick={() => toggleFavorite(movie)}
                             className="bg-black bg-opacity-50 text-white rounded-full p-2 hover:bg-opacity-75 transition-all"
                         >
-                            <svg 
-                                className={`w-6 h-6 ${isFavorite(movie.id) ? 'text-red-500 fill-current' : 'text-white'}`} 
-                                fill={isFavorite(movie.id) ? 'currentColor' : 'none'} 
-                                stroke="currentColor" 
+                            <svg
+                                className={`w-6 h-6 ${isFavorite(movie.id) ? 'text-red-500 fill-current' : 'text-white'}`}
+                                fill={isFavorite(movie.id) ? 'currentColor' : 'none'}
+                                stroke="currentColor"
                                 viewBox="0 0 24 24"
                             >
-                                <path 
-                                    strokeLinecap="round" 
-                                    strokeLinejoin="round" 
-                                    strokeWidth={2} 
-                                    d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" 
+                                <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    strokeWidth={2}
+                                    d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
                                 />
                             </svg>
                         </button>
@@ -87,7 +95,7 @@ export default function MovieDetail({ movieId, onClose }) {
                         </span>
                     </div>
 
-                    {movie.tagline && 
+                    {movie.tagline &&
                         <p className="text-gray-700 dark:text-gray-300 mb-2 italic font-bold">{movie.tagline}</p>
                     }
                     <p className="text-gray-700 dark:text-gray-300 mb-4">{movie.overview}</p>

@@ -1,55 +1,68 @@
-export default function Footer({ activeTab, setActiveTab }) {
+import { useNavigate, useLocation } from 'react-router-dom'
+
+export default function Footer() {
+    const navigate = useNavigate()
+    const location = useLocation()
+    const currentPath = location.pathname
+
+    const getActiveTab = (path) => {
+        switch (path) {
+            case '/':
+                return 'home'
+            case '/movies':
+                return 'movies'
+            case '/favorites':
+                return 'favorites'
+            default:
+                return 'home'
+        }
+    }
+
+    const handleTabChange = (tab) => {
+        switch (tab) {
+            case 'home':
+                navigate('/')
+                break
+            case 'movies':
+                navigate('/movies')
+                break
+            case 'favorites':
+                navigate('/favorites')
+                break
+        }
+    }
+
     return (
-        <footer className="mobile-footer bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700">
-            <nav className="px-4 py-2 flex items-center justify-between">
+        <footer className="mobile-footer fixed bottom-0 w-full bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700">
+            <nav className="flex justify-around items-center h-16">
                 <button
-                    onClick={() => setActiveTab('home')}
-                    className={`flex flex-col items-center p-2 flex-1 ${activeTab === 'home' ? 'text-blue-500' : 'text-gray-600 dark:text-gray-400'}`}
+                    onClick={() => handleTabChange('home')}
+                    className={`flex flex-col items-center space-y-1 ${getActiveTab(currentPath) === 'home' ? 'text-blue-500' : 'text-gray-600 dark:text-gray-400'}`}
                 >
                     <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={activeTab === 'home' ? 1 : 2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
                     </svg>
-                    <span className="text-xs mt-1">Home</span>
+                    <span className="text-xs">Home</span>
                 </button>
 
                 <button
-                    onClick={() => setActiveTab('movies')}
-                    className={`flex flex-col items-center p-2 flex-1 ${activeTab === 'movies' ? 'text-blue-500' : 'text-gray-600 dark:text-gray-400'}`}
+                    onClick={() => handleTabChange('movies')}
+                    className={`flex flex-col items-center space-y-1 ${getActiveTab(currentPath) === 'movies' ? 'text-blue-500' : 'text-gray-600 dark:text-gray-400'}`}
                 >
                     <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={activeTab === 'movies' ? 1 : 2} d="M7 4v16M17 4v16M3 8h4m10 0h4M3 12h18M3 16h4m10 0h4M4 20h16a1 1 0 001-1V5a1 1 0 00-1-1H4a1 1 0 00-1 1v14a1 1 0 001 1z" />
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 4v16M17 4v16M3 8h4m10 0h4M3 12h18M3 16h4m10 0h4M4 20h16a1 1 0 001-1V5a1 1 0 00-1-1H4a1 1 0 00-1 1v14a1 1 0 001 1z" />
                     </svg>
-                    <span className="text-xs mt-1">Movies</span>
+                    <span className="text-xs">Movies</span>
                 </button>
 
                 <button
-                    onClick={() => setActiveTab('trending')}
-                    className={`flex flex-col items-center p-2 flex-1 ${activeTab === 'trending' ? 'text-blue-500' : 'text-gray-600 dark:text-gray-400'}`}
-                >
-                    <svg className="w-6 h-6" fill={activeTab === 'trending' ? 'currentColor' : 'none'} stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={activeTab === 'trending' ? 1 : 2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
-                    </svg>
-                    <span className="text-xs mt-1">Trending</span>
-                </button>
-
-                <button
-                    onClick={() => setActiveTab('search')}
-                    className={`flex flex-col items-center p-2 flex-1 ${activeTab === 'search' ? 'text-blue-500' : 'text-gray-600 dark:text-gray-400'}`}
-                >
-                    <svg className="w-6 h-6" fill={activeTab === 'search' ? 'currentColor' : 'none'} stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={activeTab === 'search' ? 1 : 2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                    </svg>
-                    <span className="text-xs mt-1">Search</span>
-                </button>
-
-                <button
-                    onClick={() => setActiveTab('favorites')}
-                    className={`flex flex-col items-center p-2 flex-1 ${activeTab === 'favorites' ? 'text-blue-500' : 'text-gray-600 dark:text-gray-400'}`}
+                    onClick={() => handleTabChange('favorites')}
+                    className={`flex flex-col items-center space-y-1 ${getActiveTab(currentPath) === 'favorites' ? 'text-blue-500' : 'text-gray-600 dark:text-gray-400'}`}
                 >
                     <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={activeTab === 'favorites' ? 1 : 2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
                     </svg>
-                    <span className="text-xs mt-1">Favorites</span>
+                    <span className="text-xs">Favorites</span>
                 </button>
             </nav>
         </footer>

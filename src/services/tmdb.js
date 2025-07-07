@@ -67,4 +67,23 @@ export const tmdbApi = {
             results: response.data.results.slice(0, 18)
         };
     },
+    async searchMovies(query, page = 1) {
+        try {
+            const response = await axios.get(`${BASE_URL}/search/movie`, {
+                params: {
+                    api_key: TMDB_API_KEY,
+                    query,
+                    page,
+                    include_adult: false
+                }
+            });
+            return {
+                ...response.data,
+                results: response.data.results.slice(0, 18)
+            };
+        } catch (error) {
+            console.error('Error searching movies:', error);
+            return { results: [], total_pages: 0 };
+        }
+    },
 };
