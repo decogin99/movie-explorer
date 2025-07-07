@@ -41,5 +41,30 @@ export const tmdbApi = {
     },
     getImageUrl: (path, size = 'w500') => {
         return path ? `${IMAGE_BASE_URL}/${size}${path}` : null;
-    }
+    },
+
+    async getMovieGenres() {
+        const response = await axios.get(`${BASE_URL}/genre/movie/list`, {
+            params: {
+                api_key: TMDB_API_KEY,
+            }
+        });
+        return response.data.genres;
+    },
+
+    async discoverMovies({ page = 1, sort_by = 'popularity.desc', with_genres = '' }) {
+        const response = await axios.get(`${BASE_URL}/discover/movie`, {
+            params: {
+                api_key: TMDB_API_KEY,
+                page,
+                sort_by,
+                with_genres,
+                include_adult: false
+            }
+        });
+        return {
+            ...response.data,
+            results: response.data.results.slice(0, 18)
+        };
+    },
 };

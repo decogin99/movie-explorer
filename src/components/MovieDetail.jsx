@@ -1,15 +1,18 @@
 import { useState, useEffect } from 'react';
 import { tmdbApi } from '../services/tmdb';
+import { useFavorites } from '../context/FavoritesContext';
 
 export default function MovieDetail({ movieId, onClose }) {
     const [movie, setMovie] = useState(null);
     const [loading, setLoading] = useState(true);
+    const { toggleFavorite, isFavorite } = useFavorites();
 
     useEffect(() => {
         const fetchMovieDetails = async () => {
             const details = await tmdbApi.getMovieDetails(movieId);
             setMovie(details);
             setLoading(false);
+            console.log(details)
         };
         fetchMovieDetails();
     }, [movieId]);
@@ -37,14 +40,34 @@ export default function MovieDetail({ movieId, onClose }) {
                         alt={movie.title}
                         className="w-full h-48 object-cover rounded-t-lg"
                     />
-                    <button
-                        onClick={onClose}
-                        className="absolute top-2 right-2 bg-black bg-opacity-50 text-white rounded-full p-2"
-                    >
-                        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                        </svg>
-                    </button>
+                    <div className="absolute top-2 right-2 flex gap-2">
+                        <button
+                            onClick={() => toggleFavorite(movie)}
+                            className="bg-black bg-opacity-50 text-white rounded-full p-2 hover:bg-opacity-75 transition-all"
+                        >
+                            <svg 
+                                className={`w-6 h-6 ${isFavorite(movie.id) ? 'text-red-500 fill-current' : 'text-white'}`} 
+                                fill={isFavorite(movie.id) ? 'currentColor' : 'none'} 
+                                stroke="currentColor" 
+                                viewBox="0 0 24 24"
+                            >
+                                <path 
+                                    strokeLinecap="round" 
+                                    strokeLinejoin="round" 
+                                    strokeWidth={2} 
+                                    d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" 
+                                />
+                            </svg>
+                        </button>
+                        <button
+                            onClick={onClose}
+                            className="bg-black bg-opacity-50 text-white rounded-full p-2 hover:bg-opacity-75 transition-all"
+                        >
+                            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                            </svg>
+                        </button>
+                    </div>
                 </div>
 
                 <div className="p-4">
@@ -64,6 +87,9 @@ export default function MovieDetail({ movieId, onClose }) {
                         </span>
                     </div>
 
+                    {movie.tagline && 
+                        <p className="text-gray-700 dark:text-gray-300 mb-2 italic font-bold">{movie.tagline}</p>
+                    }
                     <p className="text-gray-700 dark:text-gray-300 mb-4">{movie.overview}</p>
 
                     <div className="space-y-4">

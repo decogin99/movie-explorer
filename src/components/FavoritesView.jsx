@@ -17,11 +17,13 @@ export default function FavoritesView() {
     }
 
     return (
-        <div className="mobile-content justify-between mx-auto hide-scrollbar overflow-y-auto px-4 mb-2">
-            <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-7 xl:grid-cols-9 gap-4">
-                {favorites.map(movie => (
-                    <MovieCard key={movie.id} movie={movie} />
-                ))}
+        <div className="mobile-content hide-scrollbar overflow-y-auto px-4 my-2">
+            <div className="max-w-7xl mx-auto flex flex-col gap-4">
+                <div className="mx-auto grid grid-cols-2 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-7 xl:grid-cols-9 gap-4">
+                    {favorites.map(movie => (
+                        <MovieCard key={movie.id} movie={movie} />
+                    ))}
+                </div>
             </div>
         </div>
     );

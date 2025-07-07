@@ -33,7 +33,7 @@ export default function MainContent() {
             <h3 className="text-lg font-semibold mb-3">{title}</h3>
             <div className="flex overflow-x-auto hide-scrollbar space-x-4 pb-4">
                 {loading ? (
-                    [...Array(3)].map((_, i) => (
+                    [...Array(9)].map((_, i) => (
                         <div key={i} className="w-32 h-48 flex-shrink-0 bg-gray-200 dark:bg-gray-700 rounded-lg animate-pulse"></div>
                     ))
                 ) : (
@@ -47,9 +47,9 @@ export default function MainContent() {
 
     return (
         <main className="mobile-content hide-scrollbar overflow-y-auto px-4 mb-2">
-            <div className="space-y-4">
-                <MovieSection title="Popular Movies" movies={movies.popular} />
+            <div className="space-y-3">
                 <MovieSection title="Upcoming Movies" movies={movies.upcoming} />
+                <MovieSection title="Popular Movies" movies={movies.popular} />
                 <MovieSection title="Top Rated Movies" movies={movies.topRated} />
             </div>
         </main>
