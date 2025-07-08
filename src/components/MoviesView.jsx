@@ -12,6 +12,7 @@ export default function MoviesView() {
     const [genres, setGenres] = useState([]);
     const [searchQuery, setSearchQuery] = useState('');
     const [isSearching, setIsSearching] = useState(false);
+    const [isUpcoming, setIsUpcoming] = useState(false);
 
     useEffect(() => {
         const fetchGenres = async () => {
@@ -27,6 +28,8 @@ export default function MoviesView() {
             let data;
             if (isSearching && searchQuery.trim()) {
                 data = await tmdbApi.searchMovies(searchQuery, page);
+            } else if (isUpcoming) {
+                data = await tmdbApi.getUpcomingMoviesWithPagination(page);
             } else {
                 data = await tmdbApi.discoverMovies({
                     page,
@@ -39,12 +42,13 @@ export default function MoviesView() {
             setLoading(false);
         };
         fetchMovies();
-    }, [page, selectedGenres, sortBy, isSearching]); // Removed searchQuery from dependencies
+    }, [page, selectedGenres, sortBy, isSearching, isUpcoming]); // Added isUpcoming to dependencies
 
     const handleGenreChange = (genreId) => {
         // Clear search when using genre filter
         setSearchQuery('');
         setIsSearching(false);
+        setIsUpcoming(false); // Reset upcoming filter when changing genres
 
         setSelectedGenres(prev => {
             const id = genreId.toString();
@@ -62,12 +66,26 @@ export default function MoviesView() {
         // Clear genre filters when searching
         setSelectedGenres([]);
         setIsSearching(true);
+        setIsUpcoming(false); // Reset upcoming filter when searching
         setPage(1);
+        e.target.city.blur()
     };
 
     const clearSearch = () => {
         setSearchQuery('');
         setIsSearching(false);
+        setPage(1);
+    };
+
+    const handleSortChange = (e) => {
+        const value = e.target.value;
+        if (value === 'upcoming') {
+            setIsUpcoming(true);
+            setSortBy('popularity.desc'); // Reset sort to default
+        } else {
+            setIsUpcoming(false);
+            setSortBy(value);
+        }
         setPage(1);
     };
 
@@ -124,14 +142,12 @@ export default function MoviesView() {
                             )}
                             {!isSearching && (
                                 <select
-                                    value={sortBy}
-                                    onChange={(e) => {
-                                        setSortBy(e.target.value);
-                                        setPage(1);
-                                    }}
+                                    value={isUpcoming ? 'upcoming' : sortBy}
+                                    onChange={handleSortChange}
                                     className="px-3 py-1 bg-gray-100 dark:bg-gray-700 rounded-full text-sm w-full sm:w-auto"
                                 >
                                     <option value="popularity.desc">Most Popular</option>
+                                    <option value="upcoming">Upcoming</option>
                                     <option value="revenue.desc">Box Office Hits</option>
                                     <option value="vote_count.desc">Most Watched</option>
                                 </select>
@@ -141,17 +157,20 @@ export default function MoviesView() {
                 </div>
 
                 {loading ? (
-                    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-9 gap-4">
+                    <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-10 gap-4 w-full mx-auto">
                         {[...Array(20)].map((_, i) => (
                             <div key={i} className="aspect-[2/3] bg-gray-200 dark:bg-gray-700 rounded-lg animate-pulse"></div>
                         ))}
                     </div>
                 ) : (
-                    <div className="mx-auto grid grid-cols-2 sm:grid-cols-4 md:grid-col-4 lg:grid-cols-5 gap-4">
-                        {movies.map(movie => (
-                            <MovieCard key={movie.id} movie={movie} />
-                        ))}
+                    <div className="max-w-7xl mx-auto flex flex-col gap-4">
+                        <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-10 gap-4 w-full mx-auto">
+                            {movies.map(movie => (
+                                <MovieCard key={movie.id} movie={movie} />
+                            ))}
+                        </div>
                     </div>
+
                 )}
 
                 <div className="flex justify-center gap-2 mt-2">

@@ -12,7 +12,6 @@ function App() {
   return (
     <FavoritesProvider>
       <div className="app-container">
-        <Header />
         <Routes>
           <Route path="/" element={<MainContent />} />
           <Route path="/movies" element={<MoviesView />} />

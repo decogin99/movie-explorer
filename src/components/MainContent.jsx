@@ -44,11 +44,15 @@ export default function MainContent() {
             <div className="flex overflow-x-auto hide-scrollbar space-x-4 pb-4">
                 {loading ? (
                     [...Array(9)].map((_, i) => (
-                        <div key={i} className="w-32 h-48 flex-shrink-0 bg-gray-200 dark:bg-gray-700 rounded-lg animate-pulse"></div>
+                        <div key={i} className="w-32 flex-shrink-0 min-w-[8rem]">
+                            <div className="aspect-[2/3] bg-gray-200 dark:bg-gray-700 rounded-lg animate-pulse"></div>
+                        </div>
                     ))
                 ) : (
                     movies.map(movie => (
-                        <MovieCard key={movie.id} movie={movie} />
+                        <div key={movie.id} className="w-32 flex-shrink-0 min-w-[8rem]">
+                            <MovieCard movie={movie} />
+                        </div>
                     ))
                 )}
             </div>

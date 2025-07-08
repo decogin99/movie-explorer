@@ -122,7 +122,13 @@ export default function MovieDetail({ movieId, onClose }) {
                         )}
                     </div>
                     <div className="flex items-center gap-4 text-sm text-gray-600 dark:text-gray-400 mb-4">
-                        <span>{new Date(movie.release_date).getFullYear()}</span>
+                        <span>
+                            {new Date(movie.local_release_date).toLocaleDateString('en-US', {
+                                year: 'numeric',
+                                month: 'long',
+                                day: 'numeric',
+                            })}
+                        </span>
                         <span className='flex items-center gap-1'>
                             <svg fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-4 text-yellow-400">
                                 <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />

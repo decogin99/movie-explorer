@@ -15,10 +15,10 @@ export default function MovieCard({ movie }) {
     return (
         <>
             <div
-                className="w-32 flex-shrink-0 cursor-pointer transition transform hover:scale-102"
+                className="w-full cursor-pointer transition transform hover:scale-102"
                 onClick={() => setShowDetail(true)}
             >
-                <div className="relative w-32 h-48 rounded-lg overflow-hidden shadow-lg">
+                <div className="relative aspect-[2/3] rounded-lg overflow-hidden shadow-lg">
                     <img
                         src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
                         alt={movie.title}
@@ -45,7 +45,14 @@ export default function MovieCard({ movie }) {
                     </button>
                 </div>
                 <h4 className="mt-2 text-sm font-medium truncate">{movie.title}</h4>
-                <span className='text-xs'>{new Date(movie.release_date).getFullYear()}</span>
+                {/* <span className='text-xs'>{new Date(movie.release_date).getFullYear()}</span> */}
+                <span className='text-xs'>
+                    {new Date(movie.release_date).toLocaleDateString('en-US', {
+                        year: 'numeric',
+                        month: 'short',
+                        day: 'numeric',
+                    })}
+                </span>
             </div>
 
             {showDetail && (

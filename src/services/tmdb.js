@@ -24,16 +24,12 @@ export const tmdbApi = {
     getPopularMovies: () => fetchMovies('popular'),
     getUpcomingMovies: async () => {
         try {
-            const userRegion = Intl.DateTimeFormat().resolvedOptions().locale.split('-')[1] || 'US';
-
-            console.log(userRegion)
-
+            const region = await getUserCountry();
             const response = await axios.get(`${BASE_URL}/movie/upcoming`, {
                 params: {
                     api_key: TMDB_API_KEY,
                     language: 'en-US',
-                    region: userRegion,   // 👈 Dynamic region based on user locale
-                    page: 1
+                    region: region,
                 }
             });
 
@@ -43,17 +39,53 @@ export const tmdbApi = {
             return [];
         }
     },
+    // Add this new function for upcoming movies with pagination
+    getUpcomingMoviesWithPagination: async (page = 1) => {
+        try {
+            const region = await getUserCountry();
+
+            const response = await axios.get(`${BASE_URL}/movie/upcoming`, {
+                params: {
+                    api_key: TMDB_API_KEY,
+                    language: 'en-US',
+                    region: region,
+                    page: page
+                }
+            });
+
+            return {
+                ...response.data,
+                results: response.data.results.slice(0, 20)
+            };
+        } catch (error) {
+            console.error('Error fetching upcoming movies with pagination:', error);
+            return { results: [], total_pages: 0 };
+        }
+    },
     getTopRatedMovies: () => fetchMovies('top_rated'),
     getMovieDetails: async (movieId) => {
         try {
+            const region = await getUserCountry();
+
             const response = await axios.get(`${BASE_URL}/movie/${movieId}`, {
                 params: {
                     api_key: TMDB_API_KEY,
                     language: 'en-US',
-                    append_to_response: 'credits,videos'
+                    append_to_response: 'credits,videos,release_dates'
                 }
             });
-            return response.data;
+
+            const movie = response.data;
+
+            // Get region-based release date dynamically
+            const regionReleaseData = movie.release_dates?.results?.find(r => r.iso_3166_1 === region);
+            const localRelease = regionReleaseData?.release_dates?.find(d => d.type === 3); // Type 3 = theatrical
+
+            // Add custom local release date
+            movie.local_release_date = localRelease?.release_date || movie.release_date;
+
+            return movie;
+
         } catch (error) {
             console.error('Error fetching movie details:', error);
             return null;
@@ -107,4 +139,18 @@ export const tmdbApi = {
             return { results: [], total_pages: 0 };
         }
     },
+};
+
+const getUserCountry = async () => {
+    const cached = localStorage.getItem('user_region');
+    if (cached) return cached;
+
+    try {
+        const res = await fetch("https://ipapi.co/json");
+        const data = await res.json();
+        localStorage.setItem('user_region', data.country);
+        return data.country || 'US';
+    } catch {
+        return 'US';
+    }
 };

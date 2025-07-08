@@ -6,7 +6,6 @@ export default function FavoritesView() {
     const { favorites } = useFavorites();
 
     useEffect(() => {
-        console.log("mounted")
         document.title = "Favourite Movies";
         return () => {
             document.title = "Movie Explorer";
@@ -28,7 +27,7 @@ export default function FavoritesView() {
     return (
         <div className="mobile-content hide-scrollbar overflow-y-auto px-4 my-2">
             <div className="max-w-7xl mx-auto flex flex-col gap-4">
-                <div className="mx-auto grid grid-cols-2 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-7 xl:grid-cols-9 gap-4">
+                <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-10 w-full mx-auto gap-4">
                     {favorites.map(movie => (
                         <MovieCard key={movie.id} movie={movie} />
                     ))}

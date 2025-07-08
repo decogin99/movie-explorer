@@ -55,7 +55,7 @@ button {
   }
 
   .mobile-content {
-    @apply pt-16 pb-20 px-4;
+    @apply pt-2.5 pb-20 px-4;
     /* Adjust based on your header/footer height */
   }
 
