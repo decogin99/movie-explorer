@@ -132,9 +132,8 @@ export default function MoviesView() {
                                     className="px-3 py-1 bg-gray-100 dark:bg-gray-700 rounded-full text-sm w-full sm:w-auto"
                                 >
                                     <option value="popularity.desc">Most Popular</option>
-                                    <option value="vote_average.desc">Highest Rated</option>
-                                    <option value="release_date.desc">Newest</option>
-                                    <option value="release_date.asc">Oldest</option>
+                                    <option value="revenue.desc">Box Office Hits</option>
+                                    <option value="vote_count.desc">Most Watched</option>
                                 </select>
                             )}
                         </div>
@@ -143,12 +142,12 @@ export default function MoviesView() {
 
                 {loading ? (
                     <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-9 gap-4">
-                        {[...Array(18)].map((_, i) => (
+                        {[...Array(20)].map((_, i) => (
                             <div key={i} className="aspect-[2/3] bg-gray-200 dark:bg-gray-700 rounded-lg animate-pulse"></div>
                         ))}
                     </div>
                 ) : (
-                    <div className="mx-auto grid grid-cols-2 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-7 xl:grid-cols-9 gap-4">
+                    <div className="mx-auto grid grid-cols-2 sm:grid-cols-4 md:grid-col-4 lg:grid-cols-5 gap-4">
                         {movies.map(movie => (
                             <MovieCard key={movie.id} movie={movie} />
                         ))}

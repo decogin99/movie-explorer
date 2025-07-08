@@ -22,7 +22,27 @@ const fetchMovies = async (endpoint) => {
 
 export const tmdbApi = {
     getPopularMovies: () => fetchMovies('popular'),
-    getUpcomingMovies: () => fetchMovies('upcoming'),
+    getUpcomingMovies: async () => {
+        try {
+            const userRegion = Intl.DateTimeFormat().resolvedOptions().locale.split('-')[1] || 'US';
+
+            console.log(userRegion)
+
+            const response = await axios.get(`${BASE_URL}/movie/upcoming`, {
+                params: {
+                    api_key: TMDB_API_KEY,
+                    language: 'en-US',
+                    region: userRegion,   // 👈 Dynamic region based on user locale
+                    page: 1
+                }
+            });
+
+            return response.data.results;
+        } catch (error) {
+            console.error('Error fetching upcoming movies:', error);
+            return [];
+        }
+    },
     getTopRatedMovies: () => fetchMovies('top_rated'),
     getMovieDetails: async (movieId) => {
         try {
@@ -64,7 +84,7 @@ export const tmdbApi = {
         });
         return {
             ...response.data,
-            results: response.data.results.slice(0, 18)
+            results: response.data.results.slice(0, 20)
         };
     },
     async searchMovies(query, page = 1) {
@@ -80,7 +100,7 @@ export const tmdbApi = {
 
             return {
                 ...response.data,
-                results: response.data.results.slice(0, 18)
+                results: response.data.results.slice(0, 20)
             };
         } catch (error) {
             console.error('Error searching movies:', error);
