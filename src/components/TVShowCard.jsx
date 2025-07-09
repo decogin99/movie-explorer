@@ -1,15 +1,15 @@
 import { useState } from 'react';
-import MovieDetail from './MovieDetail';
+import TVShowDetail from './TVShowDetail';
 import { useFavorites } from '../hooks/useFavorites';
 
-export default function MovieCard({ movie }) {
+export default function TVShowCard({ show }) {
     const [showDetail, setShowDetail] = useState(false);
     const { toggleFavorite, isFavorite } = useFavorites();
-    const isMovieFavorite = isFavorite(movie.id);
+    const isShowFavorite = isFavorite(show.id);
 
     const handleFavoriteClick = (e) => {
         e.stopPropagation();
-        toggleFavorite(movie);
+        toggleFavorite(show);
     };
 
     return (
@@ -19,16 +19,16 @@ export default function MovieCard({ movie }) {
                 onClick={() => setShowDetail(true)}
             >
                 <div className="relative aspect-[2/3] rounded-lg overflow-hidden shadow-lg">
-                    {movie.poster_path ? (
+                    {show.poster_path ? (
                         <img
-                            src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
-                            alt={movie.title}
+                            src={`https://image.tmdb.org/t/p/w500${show.poster_path}`}
+                            alt={show.name}
                             className="w-full h-full object-cover"
                             loading="lazy"
                         />
                     ) : (
                         <div className="w-full h-full bg-gray-300 dark:bg-gray-600 flex items-center justify-center">
-                            <span className="text-gray-500 dark:text-gray-400 text-xs font-medium">{movie.title}</span>
+                            <span className="text-gray-500 dark:text-gray-400 text-xs font-medium">{show.name}</span>
                         </div>
                     )}
                     <button
@@ -36,8 +36,8 @@ export default function MovieCard({ movie }) {
                         className="absolute top-2 right-2 p-1 rounded-full bg-black bg-opacity-50 hover:bg-opacity-75 transition-all"
                     >
                         <svg
-                            className={`w-5 h-5 ${isMovieFavorite ? 'text-red-500' : 'text-white'}`}
-                            fill={isMovieFavorite ? 'currentColor' : 'none'}
+                            className={`w-5 h-5 ${isShowFavorite ? 'text-red-500' : 'text-white'}`}
+                            fill={isShowFavorite ? 'currentColor' : 'none'}
                             stroke="currentColor"
                             viewBox="0 0 24 24"
                         >
@@ -50,10 +50,10 @@ export default function MovieCard({ movie }) {
                         </svg>
                     </button>
                 </div>
-                <h4 className="mt-2 text-sm font-medium truncate">{movie.title}</h4>
+                <h4 className="mt-2 text-sm font-medium truncate">{show.name}</h4>
                 <span className='text-xs'>
-                    {movie.release_date
-                        ? new Date(movie.release_date).toLocaleDateString('en-US', {
+                    {show.first_air_date
+                        ? new Date(show.first_air_date).toLocaleDateString('en-US', {
                             year: 'numeric',
                             month: 'short',
                             day: 'numeric',
@@ -63,8 +63,8 @@ export default function MovieCard({ movie }) {
             </div>
 
             {showDetail && (
-                <MovieDetail
-                    movieId={movie.id}
+                <TVShowDetail
+                    showId={show.id}
                     onClose={() => setShowDetail(false)}
                 />
             )}

@@ -1,11 +1,9 @@
 import { useState, useEffect } from 'react';
 import { tmdbApi } from '../services/tmdb';
-import MovieCard from './MovieCard';
-import { useLocation } from 'react-router-dom';
+import TVShowCard from './TVShowCard';
 
-export default function MoviesView() {
-    const location = useLocation();
-    const [movies, setMovies] = useState([]);
+export default function TVShowsView() {
+    const [shows, setShows] = useState([]);
     const [loading, setLoading] = useState(true);
     const [page, setPage] = useState(1);
     const [totalPages, setTotalPages] = useState(0);
@@ -14,56 +12,43 @@ export default function MoviesView() {
     const [genres, setGenres] = useState([]);
     const [searchQuery, setSearchQuery] = useState('');
     const [isSearching, setIsSearching] = useState(false);
-    const [isUpcoming, setIsUpcoming] = useState(false);
-
-    // Handle filter from navigation state
-    useEffect(() => {
-        if (location.state?.filter) {
-            if (location.state.filter === 'upcoming') {
-                setIsUpcoming(true);
-                setSortBy('popularity.desc');
-            } else {
-                setIsUpcoming(false);
-                setSortBy(location.state.filter);
-            }
-        }
-    }, [location.state]);
+    const [isAiringToday, setIsAiringToday] = useState(false);
 
     useEffect(() => {
         const fetchGenres = async () => {
-            const genreList = await tmdbApi.getMovieGenres();
+            const genreList = await tmdbApi.getTVShowGenres();
             setGenres(genreList);
         };
         fetchGenres();
     }, []);
 
     useEffect(() => {
-        const fetchMovies = async () => {
+        const fetchShows = async () => {
             setLoading(true);
             let data;
             if (isSearching && searchQuery.trim()) {
-                data = await tmdbApi.searchMovies(searchQuery, page);
-            } else if (isUpcoming) {
-                data = await tmdbApi.getUpcomingMoviesWithPagination(page);
+                data = await tmdbApi.searchTVShows(searchQuery, page);
+            } else if (isAiringToday) {
+                data = await tmdbApi.getAiringTodayTVShows(page);
             } else {
-                data = await tmdbApi.discoverMovies({
+                data = await tmdbApi.discoverTVShows({
                     page,
                     sort_by: sortBy,
                     with_genres: selectedGenres.join(',')
                 });
             }
-            setMovies(data.results);
+            setShows(data.results);
             setTotalPages(data.total_pages);
             setLoading(false);
         };
-        fetchMovies();
-    }, [page, selectedGenres, sortBy, isSearching, isUpcoming]); // Added isUpcoming to dependencies
+        fetchShows();
+    }, [page, selectedGenres, sortBy, isSearching, isAiringToday]); // Remove searchQuery from dependencies
 
     const handleGenreChange = (genreId) => {
         // Clear search when using genre filter
         setSearchQuery('');
         setIsSearching(false);
-        setIsUpcoming(false); // Reset upcoming filter when changing genres
+        setIsAiringToday(false);
 
         setSelectedGenres(prev => {
             const id = genreId.toString();
@@ -81,9 +66,9 @@ export default function MoviesView() {
         // Clear genre filters when searching
         setSelectedGenres([]);
         setIsSearching(true);
-        setIsUpcoming(false); // Reset upcoming filter when searching
+        setIsAiringToday(false);
         setPage(1);
-        e.target.searchInput.blur()
+        e.target.searchInput.blur(); // Use the correct field name
     };
 
     const clearSearch = () => {
@@ -94,18 +79,18 @@ export default function MoviesView() {
 
     const handleSortChange = (e) => {
         const value = e.target.value;
-        if (value === 'upcoming') {
-            setIsUpcoming(true);
-            setSortBy('popularity.desc'); // Reset sort to default
+        if (value === 'airing_today') {
+            setIsAiringToday(true);
+            setSortBy('popularity.desc');
         } else {
-            setIsUpcoming(false);
+            setIsAiringToday(false);
             setSortBy(value);
         }
         setPage(1);
     };
 
     useEffect(() => {
-        document.title = "Movies";
+        document.title = "TV Shows";
         return () => {
             document.title = "Movie Explorer";
         };
@@ -139,7 +124,7 @@ export default function MoviesView() {
                                     value={searchQuery}
                                     autoComplete='off'
                                     onChange={(e) => setSearchQuery(e.target.value)}
-                                    placeholder="Search movies..."
+                                    placeholder="Search TV shows..."
                                     className="px-3 py-1 bg-gray-100 dark:bg-gray-700 rounded-full text-sm flex-1"
                                 />
                                 <button
@@ -160,14 +145,14 @@ export default function MoviesView() {
                             {!isSearching && (
                                 <select
                                     name='sortSelect'
-                                    value={isUpcoming ? 'upcoming' : sortBy}
+                                    value={isAiringToday ? 'airing_today' : sortBy}
                                     onChange={handleSortChange}
                                     className="px-3 py-1 bg-gray-100 dark:bg-gray-700 rounded-full text-sm w-full sm:w-auto"
                                 >
                                     <option value="popularity.desc">Most Popular</option>
-                                    <option value="upcoming">Upcoming</option>
-                                    <option value="vote_count.desc">Most Watched</option>
-                                    <option value="revenue.desc">Box Office Hits</option>
+                                    <option value="airing_today">Airing Today</option>
+                                    <option value="vote_average.desc">Top Rated</option>
+                                    <option value="first_air_date.desc">Recently Added</option>
                                 </select>
                             )}
                         </div>
@@ -183,12 +168,11 @@ export default function MoviesView() {
                 ) : (
                     <div className="max-w-7xl mx-auto flex flex-col gap-4">
                         <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-10 gap-4 w-full mx-auto">
-                            {movies.map(movie => (
-                                <MovieCard key={movie.id} movie={movie} />
+                            {shows.map(show => (
+                                <TVShowCard key={show.id} show={show} />
                             ))}
                         </div>
                     </div>
-
                 )}
 
                 <div className="flex justify-center gap-2 mt-2">

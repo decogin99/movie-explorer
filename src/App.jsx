@@ -7,6 +7,7 @@ import MainContent from './components/MainContent'
 import FavoritesView from './components/FavoritesView'
 import { FavoritesProvider } from './context/FavoritesContext'
 import MoviesView from './components/MoviesView'
+import TVShowsView from './components/TVShowsView'
 
 function App() {
   return (
@@ -15,6 +16,7 @@ function App() {
         <Routes>
           <Route path="/" element={<MainContent />} />
           <Route path="/movies" element={<MoviesView />} />
+          <Route path="/tvshows" element={<TVShowsView />} />
           <Route path="/favorites" element={<FavoritesView />} />
         </Routes>
         <Footer />
