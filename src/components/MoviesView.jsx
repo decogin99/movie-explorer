@@ -166,7 +166,7 @@ export default function MoviesView() {
                                 >
                                     <option value="popularity.desc">Most Popular</option>
                                     <option value="upcoming">Upcoming</option>
-                                    <option value="vote_count.desc">Most Watched</option>
+                                    <option value="vote_count.desc">Top Rated</option>
                                     <option value="revenue.desc">Box Office Hits</option>
                                 </select>
                             )}

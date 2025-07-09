@@ -22,6 +22,23 @@ const fetchMovies = async (endpoint) => {
 
 export const tmdbApi = {
     getPopularMovies: () => fetchMovies('popular'),
+    async discoverMovies({ page = 1, sort_by = 'popularity.desc', with_genres = '' }) {
+
+        const response = await axios.get(`${BASE_URL}/discover/movie`, {
+            params: {
+                api_key: TMDB_API_KEY,
+                page,
+                sort_by,
+                with_genres,
+                include_adult: false
+            }
+        });
+        return {
+            ...response.data,
+            results: response.data.results.slice(0, 20)
+        };
+    },
+
     getUpcomingMovies: async () => {
         try {
             const region = await getUserCountry();
@@ -39,7 +56,6 @@ export const tmdbApi = {
             return [];
         }
     },
-    // Add this new function for upcoming movies with pagination
     getUpcomingMoviesWithPagination: async (page = 1) => {
         try {
             const region = await getUserCountry();
@@ -62,7 +78,31 @@ export const tmdbApi = {
             return { results: [], total_pages: 0 };
         }
     },
+
     getTopRatedMovies: () => fetchMovies('top_rated'),
+    getTopRatedMoviesWithPagination: async (page = 1) => {
+        try {
+            const region = await getUserCountry();
+
+            const response = await axios.get(`${BASE_URL}/movie/top_rated`, {
+                params: {
+                    api_key: TMDB_API_KEY,
+                    language: 'en-US',
+                    region: region,
+                    page: page
+                }
+            });
+
+            return {
+                ...response.data,
+                results: response.data.results.slice(0, 20)
+            };
+        } catch (error) {
+            console.error('Error fetching top rated movies with pagination:', error);
+            return { results: [], total_pages: 0 };
+        }
+    },
+
     getMovieDetails: async (movieId) => {
         try {
             const region = await getUserCountry();
@@ -95,10 +135,12 @@ export const tmdbApi = {
     // New TV show functions
     getPopularTVShows: async () => {
         try {
+            const region = await getUserCountry();
             const response = await axios.get(`${BASE_URL}/tv/popular`, {
                 params: {
                     api_key: TMDB_API_KEY,
                     language: 'en-US',
+                    region: region,
                     page: 1
                 }
             });
@@ -110,10 +152,12 @@ export const tmdbApi = {
     },
     getTopRatedTVShows: async () => {
         try {
+            const region = await getUserCountry();
             const response = await axios.get(`${BASE_URL}/tv/top_rated`, {
                 params: {
                     api_key: TMDB_API_KEY,
                     language: 'en-US',
+                    region: region,
                     page: 1
                 }
             });
@@ -125,10 +169,13 @@ export const tmdbApi = {
     },
     getAiringTodayTVShows: async (page = 1) => {
         try {
+
+            const region = await getUserCountry();
             const response = await axios.get(`${BASE_URL}/tv/airing_today`, {
                 params: {
                     api_key: TMDB_API_KEY,
                     language: 'en-US',
+                    region: region,
                     page: page
                 }
             });
@@ -171,13 +218,15 @@ export const tmdbApi = {
     },
     discoverTVShows: async ({ page = 1, sort_by = 'popularity.desc', with_genres = '' }) => {
         try {
+            const region = await getUserCountry();
             const response = await axios.get(`${BASE_URL}/discover/tv`, {
                 params: {
                     api_key: TMDB_API_KEY,
                     page,
                     sort_by,
                     with_genres,
-                    include_adult: false
+                    include_adult: false,
+                    region: region
                 }
             });
             return {
@@ -222,21 +271,7 @@ export const tmdbApi = {
         return response.data.genres;
     },
 
-    async discoverMovies({ page = 1, sort_by = 'popularity.desc', with_genres = '' }) {
-        const response = await axios.get(`${BASE_URL}/discover/movie`, {
-            params: {
-                api_key: TMDB_API_KEY,
-                page,
-                sort_by,
-                with_genres,
-                include_adult: false
-            }
-        });
-        return {
-            ...response.data,
-            results: response.data.results.slice(0, 20)
-        };
-    },
+
     async searchMovies(query, page = 1) {
         try {
             const response = await axios.get(`${BASE_URL}/search/movie`, {
@@ -256,7 +291,7 @@ export const tmdbApi = {
             console.error('Error searching movies:', error);
             return { results: [], total_pages: 0 };
         }
-    },
+    }
 };
 
 const getUserCountry = async () => {

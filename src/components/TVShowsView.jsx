@@ -151,7 +151,7 @@ export default function TVShowsView() {
                                 >
                                     <option value="popularity.desc">Most Popular</option>
                                     <option value="airing_today">Airing Today</option>
-                                    <option value="vote_average.desc">Top Rated</option>
+                                    <option value="vote_count.desc">Top Rated</option>
                                     <option value="first_air_date.desc">Recently Added</option>
                                 </select>
                             )}
