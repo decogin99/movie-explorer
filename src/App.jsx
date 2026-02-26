@@ -1,5 +1,5 @@
 
-
+import { useEffect } from 'react'
 import { Routes, Route } from 'react-router-dom'
 import Header from './components/Header'
 import Footer from './components/Footer'
@@ -8,8 +8,16 @@ import FavoritesView from './components/FavoritesView'
 import { FavoritesProvider } from './context/FavoritesContext'
 import MoviesView from './components/MoviesView'
 import TVShowsView from './components/TVShowsView'
+import { getUserCountry } from './utils/region'
+
+
 
 function App() {
+
+  useEffect(() => {
+    getUserCountry();
+  }, []);
+
   return (
     <FavoritesProvider>
       <div className="app-container">
