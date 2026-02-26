@@ -43,6 +43,7 @@ export const tmdbApi = {
     getUpcomingMovies: async () => {
         try {
             const region = getUserCountry();
+            console.log('region', region);
             const response = await axios.get(`${BASE_URL}/movie/upcoming`, {
                 params: {
                     api_key: TMDB_API_KEY,
