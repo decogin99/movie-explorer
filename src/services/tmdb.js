@@ -41,15 +41,14 @@ export const tmdbApi = {
 
     getUpcomingMovies: async () => {
         try {
-            const region = await getUserCountry();
+            //const region = await getUserCountry();
             const response = await axios.get(`${BASE_URL}/movie/upcoming`, {
                 params: {
                     api_key: TMDB_API_KEY,
                     language: 'en-US',
-                    region: region,
+                    //region: region,
                 }
             });
-
             return response.data.results;
         } catch (error) {
             console.error('Error fetching upcoming movies:', error);
@@ -58,13 +57,13 @@ export const tmdbApi = {
     },
     getUpcomingMoviesWithPagination: async (page = 1) => {
         try {
-            const region = await getUserCountry();
+            //const region = await getUserCountry();
 
             const response = await axios.get(`${BASE_URL}/movie/upcoming`, {
                 params: {
                     api_key: TMDB_API_KEY,
                     language: 'en-US',
-                    region: region,
+                    //region: region,
                     page: page
                 }
             });
